@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} · Miguel Ozana{% endblock %}
+
+{% block content %}
+<section class="section">
+  <a class="back" href="/">← voltar</a>
+  <span class="tag">{{ project.category }}</span>
+  <h1>{{ project.title }}</h1>
+  <p class="lead">{{ project.summary }}</p>
+
+  <div class="pipeline big">
+    {% for step in project.pipeline %}
+      <span class="step">{{ step }}</span>
+      {% if not loop.last %}<span class="arrow">→</span>{% endif %}
+    {% endfor %}
+  </div>
+
+  {% if project.metrics %}
+  <div class="metrics">
+    {% for m in project.metrics %}
+    <div class="metric">
+      <span class="metric-value">{{ m.value }}</span>
+      <span class="metric-label">{{ m.label }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if project.description_md %}
+  <div class="prose">{{ project.description_md | md | safe }}</div>
+  {% endif %}
+
+  <div class="stack">
+    {% for s in project.stack %}<span class="chip">{{ s }}</span>{% endfor %}
+  </div>
+
+  {% if project.repo_url or project.demo_url %}
+  <p class="links">
+    {% if project.repo_url %}<a href="{{ project.repo_url }}" target="_blank" rel="noopener">repositório ↗</a>{% endif %}
+    {% if project.demo_url %}<a href="{{ project.demo_url }}" target="_blank" rel="noopener">demo ↗</a>{% endif %}
+  </p>
+  {% endif %}
+</section>
+{% endblock %}
