@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Currículo{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <h1>Currículo</h1>
+</div>
+
+{% if saved %}<p class="notice">Currículo atualizado.</p>{% endif %}
+{% if deleted %}<p class="notice">Currículo removido.</p>{% endif %}
+{% if error %}<p class="alert">{{ error }}</p>{% endif %}
+
+<div class="file-card">
+  {% if info %}
+    <div>
+      <span class="badge on">no ar</span>
+      <p class="mono">curriculo.pdf · {{ info.size_kb }} KB · atualizado em {{ info.updated }}</p>
+    </div>
+    <div class="actions">
+      <a class="btn ghost" href="/curriculo">baixar atual</a>
+      <form method="post" action="/admin/resume/delete"
+            onsubmit="return confirm('Remover o currículo do site?');" class="inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+        <button type="submit" class="btn danger">remover</button>
+      </form>
+    </div>
+  {% else %}
+    <p class="muted">Nenhum currículo enviado. O botão de download fica oculto no site.</p>
+  {% endif %}
+</div>
+
+<form method="post" action="/admin/resume" enctype="multipart/form-data" class="form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+  <label>{{ "substituir PDF" if info else "enviar PDF" }} <span class="muted">(até {{ max_mb }} MB)</span>
+    <input type="file" name="file" accept="application/pdf,.pdf" required>
+  </label>
+  <div class="actions">
+    <button type="submit" class="btn">enviar</button>
+  </div>
+</form>
+{% endblock %}

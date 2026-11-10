@@ -1,0 +1,56 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Freelance{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <h1>Freelance</h1>
+  <a href="/freelance" target="_blank" rel="noopener">ver página ↗</a>
+</div>
+
+{% if saved %}<p class="notice">Salvo.</p>{% endif %}
+
+<form method="post" action="/admin/freelance" class="form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+
+  <div class="checks">
+    <label class="check">
+      <input type="checkbox" name="freelance_enabled" {% if site.freelance_enabled %}checked{% endif %}>
+      exibir seção de freelance (e o selo "disponível para projetos")
+    </label>
+  </div>
+
+  <label>título
+    <input type="text" name="freelance_title" value="{{ site.freelance_title }}"
+           placeholder="Ex.: Automação e dados sob medida para o seu negócio">
+  </label>
+
+  <label>texto de apresentação
+    <textarea name="freelance_text" rows="4">{{ site.freelance_text }}</textarea>
+  </label>
+
+  <label>link do botão de contato <span class="muted">(WhatsApp, e-mail, LinkedIn; vazio = usa o e-mail do site)</span>
+    <input type="text" name="freelance_contact_url" value="{{ site.freelance_contact_url }}"
+           placeholder="https://wa.me/55... ou mailto:voce@exemplo.com">
+  </label>
+
+  <fieldset>
+    <legend>serviços</legend>
+    <div id="service-rows" class="rows">
+      {% for s in services %}
+        {% with svc_title=s.title, svc_description=s.description, svc_tags=s.tags | join(', ') %}
+          {% include "admin/partials/service_row.html" %}
+        {% endwith %}
+      {% endfor %}
+    </div>
+    <button type="button" class="btn ghost"
+            hx-get="/admin/freelance/partials/service" hx-target="#service-rows" hx-swap="beforeend">
+      + serviço
+    </button>
+  </fieldset>
+
+  <div class="actions">
+    <button type="submit" class="btn">salvar</button>
+  </div>
+</form>
+{% endblock %}

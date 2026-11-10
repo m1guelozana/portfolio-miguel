@@ -1,0 +1,41 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Projetos{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <h1>Projetos</h1>
+  <a class="btn" href="/admin/projects/new">+ novo projeto</a>
+</div>
+
+{% if projects %}
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Ordem</th><th>Título</th><th>Categoria</th><th>Status</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in projects %}
+      <tr>
+        <td class="mono">{{ p.order }}</td>
+        <td>
+          <a href="/admin/projects/{{ p.id }}">{{ p.title }}</a>
+          <div class="muted mono">/{{ p.slug }}</div>
+        </td>
+        <td>{{ p.category }}</td>
+        <td>
+          {% if p.published %}<span class="badge on">publicado</span>{% else %}<span class="badge">rascunho</span>{% endif %}
+          {% if p.featured %}<span class="badge on">destaque</span>{% endif %}
+        </td>
+        <td class="right"><a href="/admin/projects/{{ p.id }}">editar</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="muted">Nenhum projeto ainda.</p>
+{% endif %}
+{% endblock %}

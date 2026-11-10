@@ -1,0 +1,30 @@
+{% set cta = site.freelance_contact_url or (("mailto:" ~ site.email) if site.email else "/#contato") %}
+
+<section id="freelance" class="section freelance">
+  <span class="status"><span class="dot"></span> disponível para projetos</span>
+  <h2 class="section-title"><span class="accent">#</span> freelance</h2>
+
+  {% if site.freelance_title %}<p class="freelance-title">{{ site.freelance_title }}</p>{% endif %}
+  {% if site.freelance_text %}<p class="lead">{{ site.freelance_text }}</p>{% endif %}
+
+  {% if site.services %}
+  <div class="grid services">
+    {% for s in site.services %}
+    <div class="card static">
+      <h3>{{ s.title }}</h3>
+      {% if s.description %}<p>{{ s.description }}</p>{% endif %}
+      {% if s.tags %}
+      <div class="stack">
+        {% for t in s.tags %}<span class="chip">{{ t }}</span>{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <a class="cta" href="{{ cta }}"
+     {% if cta.startswith("http") %}target="_blank" rel="noopener"{% endif %}>
+    vamos conversar →
+  </a>
+</section>

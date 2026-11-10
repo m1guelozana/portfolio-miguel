@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Foto{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <h1>Foto</h1>
+</div>
+
+{% if saved %}<p class="notice">Foto atualizada.</p>{% endif %}
+{% if deleted %}<p class="notice">Foto removida.</p>{% endif %}
+{% if error %}<p class="alert">{{ error }}</p>{% endif %}
+
+<div class="file-card">
+  {% if url %}
+    <div class="photo-current">
+      <img class="avatar" src="{{ url }}" alt="Foto atual" width="120" height="120">
+      <div>
+        <span class="badge on">no ar</span>
+        <p class="muted">Recortada em {{ size }}×{{ size }} px, sem metadados.</p>
+      </div>
+    </div>
+    <form method="post" action="/admin/photo/delete"
+          onsubmit="return confirm('Remover a foto do site?');" class="inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+      <button type="submit" class="btn danger">remover</button>
+    </form>
+  {% else %}
+    <p class="muted">Nenhuma foto enviada. O hero fica só com o texto.</p>
+  {% endif %}
+</div>
+
+<form method="post" action="/admin/photo" enctype="multipart/form-data" class="form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+  <label>{{ "substituir foto" if url else "enviar foto" }}
+    <span class="muted">(JPG, PNG ou WebP, até {{ max_mb }} MB; use uma foto com o rosto centralizado)</span>
+    <input type="file" name="file" accept="image/jpeg,image/png,image/webp" required>
+  </label>
+  <div class="actions">
+    <button type="submit" class="btn">enviar</button>
+  </div>
+</form>
+{% endblock %}

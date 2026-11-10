@@ -1,0 +1,9 @@
+<div class="exp-row">
+  <div class="two">
+    <input type="text" name="exp_role" value="{{ e_role }}" placeholder="Cargo">
+    <input type="text" name="exp_company" value="{{ e_company }}" placeholder="Empresa">
+  </div>
+  <input type="text" name="exp_period" value="{{ e_period }}" placeholder="Período (ex.: nov/2024 — atual)">
+  <textarea name="exp_description" rows="3" placeholder="O que você fez (uma ou duas frases)">{{ e_description }}</textarea>
+  <button type="button" class="btn ghost sm" onclick="this.parentElement.remove()">remover</button>
+</div>

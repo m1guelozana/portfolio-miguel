@@ -1,0 +1,65 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Site{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <h1>Configurações do site</h1>
+</div>
+
+{% if saved %}<p class="notice">Salvo.</p>{% endif %}
+
+<form method="post" action="/admin/settings" class="form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+
+  <div class="two">
+    <label>nome
+      <input type="text" name="name" value="{{ site.name }}">
+    </label>
+    <label>título do hero
+      <input type="text" name="hero_title" value="{{ site.hero_title }}">
+    </label>
+  </div>
+
+  <label>texto do hero
+    <textarea name="hero_text" rows="4">{{ site.hero_text }}</textarea>
+  </label>
+
+  <label>e-mail
+    <input type="email" name="email" value="{{ site.email }}">
+  </label>
+
+  <div class="two">
+    <label>GitHub (URL)
+      <input type="url" name="github_url" value="{{ site.github_url }}">
+    </label>
+    <label>LinkedIn (URL)
+      <input type="url" name="linkedin_url" value="{{ site.linkedin_url }}">
+    </label>
+  </div>
+
+  <label>stack <span class="muted">(uma linha por grupo, no formato "Grupo: item, item")</span>
+    <textarea name="stack_text" rows="6"
+              placeholder="Dados: Python, SQL, Impala&#10;Backend: FastAPI, Spring Boot&#10;Automação: Selenium">{{ stack_text }}</textarea>
+  </label>
+
+  <fieldset>
+    <legend>experiência</legend>
+    <div id="exp-rows" class="rows">
+      {% for e in experience %}
+        {% with e_role=e.role, e_company=e.company, e_period=e.period, e_description=e.description %}
+          {% include "admin/partials/experience_row.html" %}
+        {% endwith %}
+      {% endfor %}
+    </div>
+    <button type="button" class="btn ghost"
+            hx-get="/admin/partials/experience" hx-target="#exp-rows" hx-swap="beforeend">
+      + experiência
+    </button>
+  </fieldset>
+
+  <div class="actions">
+    <button type="submit" class="btn">salvar</button>
+  </div>
+</form>
+{% endblock %}

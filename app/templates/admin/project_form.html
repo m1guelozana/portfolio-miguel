@@ -1,0 +1,120 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ "Editar projeto" if project_id else "Novo projeto" }}{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <h1>{{ "Editar projeto" if project_id else "Novo projeto" }}</h1>
+  <a href="/admin/">← voltar</a>
+</div>
+
+{% if error %}<p class="alert">{{ error }}</p>{% endif %}
+
+<form method="post"
+      action="{{ '/admin/projects/' ~ project_id if project_id else '/admin/projects/new' }}"
+      class="form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+
+  <div class="two">
+    <label>título
+      <input type="text" name="title" value="{{ form.title }}" required>
+    </label>
+    <label>slug <span class="muted">(vazio = gerado do título)</span>
+      <input type="text" name="slug" value="{{ form.slug }}">
+    </label>
+  </div>
+
+  <div class="two">
+    <label>categoria
+      <input type="text" name="category" list="categories" value="{{ form.category }}">
+      <datalist id="categories">
+        {% for c in categories %}<option value="{{ c }}">{% endfor %}
+      </datalist>
+    </label>
+    <label>ordem
+      <input type="number" name="order" value="{{ form.order }}">
+    </label>
+  </div>
+
+  <label>resumo
+    <input type="text" name="summary" value="{{ form.summary }}" maxlength="400" required>
+  </label>
+
+  <label>stack <span class="muted">(separada por vírgula)</span>
+    <input type="text" name="stack" value="{{ form.stack | join(', ') }}">
+  </label>
+
+  <fieldset>
+    <legend>pipeline</legend>
+    <div id="pipeline-rows" class="rows">
+      {% for step in form.pipeline %}
+        {% with step_value=step %}{% include "admin/partials/step_row.html" %}{% endwith %}
+      {% endfor %}
+    </div>
+    <button type="button" class="btn ghost"
+            hx-get="/admin/partials/step" hx-target="#pipeline-rows" hx-swap="beforeend">
+      + etapa
+    </button>
+  </fieldset>
+
+  <fieldset>
+    <legend>métricas</legend>
+    <div id="metric-rows" class="rows">
+      {% for m in form.metrics %}
+        {% with m_label=m.label, m_value=m.value %}{% include "admin/partials/metric_row.html" %}{% endwith %}
+      {% endfor %}
+    </div>
+    <button type="button" class="btn ghost"
+            hx-get="/admin/partials/metric" hx-target="#metric-rows" hx-swap="beforeend">
+      + métrica
+    </button>
+  </fieldset>
+
+  <div class="two">
+    <label>repositório (URL)
+      <input type="url" name="repo_url" value="{{ form.repo_url or '' }}">
+    </label>
+    <label>demo (URL)
+      <input type="url" name="demo_url" value="{{ form.demo_url or '' }}">
+    </label>
+  </div>
+
+  <label>capa (URL da imagem)
+    <input type="url" name="cover_url" value="{{ form.cover_url or '' }}">
+  </label>
+
+  <div class="two">
+    <label>descrição (markdown)
+      <textarea name="description_md" rows="14"
+                hx-post="/admin/preview"
+                hx-trigger="keyup changed delay:400ms, load"
+                hx-target="#preview">{{ form.description_md }}</textarea>
+    </label>
+    <div>
+      <span class="label-text">preview</span>
+      <div id="preview" class="prose preview"></div>
+    </div>
+  </div>
+
+  <div class="checks">
+    <label class="check">
+      <input type="checkbox" name="published" {% if form.published %}checked{% endif %}> publicado
+    </label>
+    <label class="check">
+      <input type="checkbox" name="featured" {% if form.featured %}checked{% endif %}> destaque
+    </label>
+  </div>
+
+  <div class="actions">
+    <button type="submit" class="btn">salvar</button>
+  </div>
+</form>
+
+{% if project_id %}
+<form method="post" action="/admin/projects/{{ project_id }}/delete"
+      onsubmit="return confirm('Excluir este projeto?');" class="danger-zone">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+  <button type="submit" class="btn danger">excluir projeto</button>
+</form>
+{% endif %}
+{% endblock %}

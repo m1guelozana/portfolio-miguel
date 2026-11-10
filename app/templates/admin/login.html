@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Login{% endblock %}
+{% block nav %}{% endblock %}
+
+{% block content %}
+<section class="login">
+  <p class="prompt">$ sudo login</p>
+  {% if error %}<p class="alert">{{ error }}</p>{% endif %}
+  <form method="post" action="/admin/login" class="form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+    <label>usuário
+      <input type="text" name="username" autocomplete="username" required autofocus>
+    </label>
+    <label>senha
+      <input type="password" name="password" autocomplete="current-password" required>
+    </label>
+    <button type="submit" class="btn">entrar</button>
+  </form>
+</section>
+{% endblock %}
